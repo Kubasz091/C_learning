@@ -80,10 +80,16 @@ int main(void) {
         handleInput(&idle_jump_time, current_time);
 
         if (board[player_y][player_x] == OBSTACLE) {
-            updatePlayer();
             system("clear");
 
             printf("Controls: A/D=move, W/Space=jump, S=crounch, Q=quit\n");
+
+            if (is_crounching) {
+                board[player_y][player_x] = CRUNCHING;
+            }
+            else {
+                board[player_y][player_x] = STANDING;
+            }
 
             printBoard(board);
 
@@ -140,14 +146,14 @@ int main(void) {
             }
             else if (current_time >= obstacle_spawn_time) {
                 obstacle_x = WIDTH - 1;
-                obstacle_height = 1 + (rand() % (6));
+                obstacle_height = 1 + (rand() % (8));
                 obstacle_destroyed = 0;
                 for (int i = HEIGHT - 2; i >= HEIGHT - 2 - obstacle_height; i--) {
                         board[i][obstacle_x] = OBSTACLE;
                 }
                 obstacle_spawn_time = current_time + (int)(5000.0 / speed) + 500 + (rand() % (1000));
             }
-            obstacle_update_time = current_time + (int)(250.0 / speed) + 3 + (rand() % (10));
+            obstacle_update_time = current_time + (int)(250.0 / speed) + 10;
         }
 
     }
@@ -184,7 +190,7 @@ void updatePlayer(void) {
         }
 
         if (player_x > 0 && player_x < WIDTH - 1) {
-            player_x += velocity_x*2;
+            player_x += velocity_x;
             if (player_x < 0) {
                 player_x = 0;
             }
