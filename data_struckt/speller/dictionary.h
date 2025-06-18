@@ -12,7 +12,7 @@
 
 typedef struct table {
     struct table *nexts[N];
-    bool complete_word[N];
+    bool complete_word;
 }table;
 
 // Prototypes

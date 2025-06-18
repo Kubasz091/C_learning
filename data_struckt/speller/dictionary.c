@@ -30,7 +30,7 @@ bool check(const char *word)
     for (int i = 0; i <= word_lenght; i++)
     {
         if (word_copy[i] == '\0') {
-            return current->complete_word[hash(word_copy[i-1])];
+            return current->complete_word;
         }
         else {
             unsigned int index = hash(word_copy[i]);
@@ -65,7 +65,7 @@ bool load(const char *dictionary)
 
     for (int i = 0; i < N; i++) {
         DICTIONARY.nexts[i] = NULL;
-        DICTIONARY.complete_word[i] = false;
+        DICTIONARY.complete_word = false;
     }
 
     while (fscanf(file, "%s", word) != EOF)
@@ -84,7 +84,7 @@ bool load(const char *dictionary)
         for (int i = 0; i <= word_lenght; i++)
         {
             if (word[i] == '\0') {
-                current->complete_word[hash(word[i-1])] = true;
+                current->complete_word = true;
             }
             else {
                 unsigned int index = hash(word[i]);
@@ -100,7 +100,7 @@ bool load(const char *dictionary)
                     for (int j = 0; j < N; j++)
                     {
                         current->nexts[index]->nexts[j] = NULL;
-                        current->nexts[index]->complete_word[j] = false;
+                        current->nexts[index]->complete_word = false;
                     }
                 }
                 current = current->nexts[index];
@@ -122,12 +122,13 @@ unsigned int size_dict(table *dict) {
     for (int i = 0; i < N; i++) {
         if (dict->nexts[i] != NULL) {
             size_sum += size_dict(dict->nexts[i]);
-            if (dict->complete_word[i]) {
-                size_sum++;
-            }
+            // if (dict->complete_word) {
+            //     size_sum++;
+            // }
         }
-        else if (dict->complete_word[i]) size_sum++;
+        // else if (dict->complete_word) return 1;
     }
+    if (dict->complete_word) size_sum++; // with the new way of signaling that the word is misspelled the sizing is easier, and just the structure is more conventional
     return size_sum;
 }
 
